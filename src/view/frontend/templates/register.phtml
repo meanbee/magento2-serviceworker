@@ -1,0 +1,14 @@
+<?php /** @var \Meanbee\ServiceWorker\Block\Register $block */ ?>
+<?php if ($block->isEnabled()): ?>
+    <script type="text/javascript">
+        (() => {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker
+                    .register('<?php echo $block->getServiceWorkerJsUrl() ?>')
+                    .catch(err => {
+                        console.log('Service worker registration failed: ', err);
+                    });
+            }
+        })();
+    </script>
+<?php endif; ?>
