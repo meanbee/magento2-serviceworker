@@ -11,7 +11,6 @@ Features:
 
 Add this extension to your Magento installation with Composer:
 
-    composer config repositories.meanbee-serviceworker vcs https://github.com/meanbee/magento2-serviceworker
     composer require meanbee/magento2-serviceworker
 
 ## Usage
