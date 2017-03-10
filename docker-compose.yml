@@ -107,7 +107,7 @@ services:
       - SYNC_VERBOSE=1
       - SYNC_MAX_INOTIFY_WATCHES=64000
     privileged: true
-    restart: always
+    restart: on-failure:5
 
   dbdata:
     image: tianon/true
