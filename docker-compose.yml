@@ -81,6 +81,15 @@ services:
     links:
       - db
 
+  node:
+    image: node:8
+    working_dir: /src
+    command: /bin/true
+    volumes:
+      - ~/.npm:/.npm
+    volumes_from:
+      - appdata
+
   db:
     image: mariadb:10
     ports:
