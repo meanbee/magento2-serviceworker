@@ -5,6 +5,12 @@ const version = '<?php echo $block->getVersion() ?>';
 const offlinePage = '<?php echo $block->getOfflinePageUrl() ?>';
 const urlBlacklist = <?php echo json_encode($block->getUrlBlacklist()) ?>;
 
+<?php if ($block->isGaOfflineEnabled()): ?>
+importScripts('<?php echo $block->getGaJsUrl() ?>');
+
+workbox.googleAnalytics.initialize();
+<?php endif; ?>
+
 // Functions
 // #####################################
 

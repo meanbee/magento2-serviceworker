@@ -9,6 +9,7 @@ class Config extends \Magento\Framework\App\Helper\AbstractHelper
     const XML_PATH_ENABLE = "web/serviceworker/enable";
     const XML_PATH_OFFLINE_PAGE = "web/serviceworker/offline_page";
     const XML_PATH_URL_BLACKLIST = "web/serviceworker/url_blacklist";
+    const XML_PATH_GA_OFFLINE_ENABLE = "web/serviceworker/ga_offline_enable";
 
     const PATH_WILDCARD_SYMBOL = "*";
 
@@ -80,5 +81,17 @@ class Config extends \Magento\Framework\App\Helper\AbstractHelper
         }
 
         return $data;
+    }
+
+    /**
+     * Check if Offline Google Analytics features are enabled.
+     *
+     * @param string $store
+     *
+     * @return bool
+     */
+    public function isGaOfflineEnabled($store = null)
+    {
+        return $this->scopeConfig->isSetFlag(static::XML_PATH_GA_OFFLINE_ENABLE, ScopeInterface::SCOPE_STORE, $store);
     }
 }

@@ -36,6 +36,14 @@ A Docker development environment is included with the project:
     docker-compose run --rm cli bash /src/setup.sh
     docker-compose up -d
 
+### npm dependencies
+
+The extension uses npm to manage some of its web dependencies. Dependencies are installed and updated using npm, then
+copied into the `src/` directory using an npm script. To update the web dependencies, run:
+
+    docker-compose run --rm node npm update
+    docker-compose run --rm node npm run build
+
 ### Testing Service Workers on Chrome
 
 Chrome is very strict about security and only allows Service Workers on localhost, or on an HTTPS site with a valid certificate. To bypass these restrictions for testing, use the `--ignore-certificate-errors` and `--unsafely-treat-insecure-origin-as-secure` flags to run a less secure copy of Chrome:

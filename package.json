@@ -1,0 +1,25 @@
+{
+  "name": "@meanbee/magento2-serviceworker",
+  "version": "1.0.0",
+  "description": "A Magento 2 extension that adds Service Worker support.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:clean": "rm -rf src/view/frontend/web/js/lib/*",
+    "build:copy": "find node_modules/workbox-google-analytics -name 'workbox-google-analytics.prod.*' -exec install -t src/view/frontend/web/js/lib {} +",
+    "build": "npm run build:clean && npm run build:copy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/meanbee/magento2-serviceworker.git"
+  },
+  "author": "Tomas Gerulaitis <tomas.gerulaitis@meanbee.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/meanbee/magento2-serviceworker/issues"
+  },
+  "homepage": "https://github.com/meanbee/magento2-serviceworker#readme",
+  "dependencies": {
+    "workbox-google-analytics": "^1.0.0"
+  }
+}
