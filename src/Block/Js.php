@@ -53,4 +53,24 @@ class Js extends \Magento\Framework\View\Element\Template
     {
         return $this->config->getUrlBlacklist();
     }
+
+    /**
+     * Check if Offline Google Analytics features are enabled.
+     *
+     * @return bool
+     */
+    public function isGaOfflineEnabled()
+    {
+        return $this->config->isGaOfflineEnabled();
+    }
+
+    /**
+     * Get the URL to the Offline Google Analytics helper script.
+     *
+     * @return string
+     */
+    public function getGaJsUrl()
+    {
+        return $this->getViewFileUrl("Meanbee_ServiceWorker::js/lib/workbox-google-analytics.prod.v1.0.0.js");
+    }
 }

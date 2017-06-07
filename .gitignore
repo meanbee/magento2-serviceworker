@@ -1,1 +1,5 @@
+# Build files
+/node_modules
+
+# Dev environment
 /magento

@@ -9,6 +9,7 @@
 customer/account/create*
 customer/account/login*
 ]]></url_blacklist>
+                <ga_offline_enable>1</ga_offline_enable>
             </serviceworker>
         </web>
     </default>

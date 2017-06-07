@@ -81,6 +81,15 @@ services:
     links:
       - db
 
+  node:
+    image: node:8
+    working_dir: /src
+    command: /bin/true
+    volumes:
+      - ~/.npm:/.npm
+    volumes_from:
+      - appdata
+
   db:
     image: mariadb:10
     ports:
@@ -107,7 +116,7 @@ services:
       - SYNC_VERBOSE=1
       - SYNC_MAX_INOTIFY_WATCHES=64000
     privileged: true
-    restart: always
+    restart: on-failure:5
 
   dbdata:
     image: tianon/true
