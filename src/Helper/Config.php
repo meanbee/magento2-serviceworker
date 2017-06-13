@@ -67,17 +67,13 @@ class Config extends \Magento\Framework\App\Helper\AbstractHelper
             explode("\n", $this->scopeConfig->getValue(static::XML_PATH_URL_BLACKLIST, ScopeInterface::SCOPE_STORE))
         ));
 
-        $data = [
-            "full_match"   => [],
-            "prefix_match" => [],
-        ];
+        $data = [];
 
         foreach ($paths as $path) {
-            if (substr($path, -1) == static::PATH_WILDCARD_SYMBOL) {
-                $data["prefix_match"][] = $base_url . substr($path, 0, -1);
-            } else {
-                $data["full_match"][] = $base_url . $path;
-            }
+            $data[] = [
+                "path"     => $base_url . $path,
+                "strategy" => "networkOnly",
+            ];
         }
 
         return $data;

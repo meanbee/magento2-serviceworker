@@ -9,16 +9,34 @@ class Js extends \Magento\Framework\View\Element\Template
     /** @var \Meanbee\ServiceWorker\Helper\Config $config */
     protected $config;
 
+    /** @var  \Magento\Framework\Json\Helper\Data $jsonHelper */
+    protected $jsonHelper;
+
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
         \Meanbee\ServiceWorker\Helper\Config $config,
+        \Magento\Framework\Json\Helper\Data $jsonHelper,
         array $data
     ) {
         $this->config = $config;
 
+        $this->jsonHelper = $jsonHelper;
+
         $data["cache_lifetime"] = 60 * 60 * 24 * 365;
 
         parent::__construct($context, $data);
+    }
+
+    /**
+     * Get the provided data encoded as a JSON object.
+     *
+     * @param mixed $data
+     *
+     * @return string
+     */
+    public function jsonEncode($data)
+    {
+        return $this->jsonHelper->jsonEncode($data);
     }
 
     /**
@@ -45,6 +63,24 @@ class Js extends \Magento\Framework\View\Element\Template
     }
 
     /**
+     * Get the list of URLs for external scripts to import into the service worker.
+     *
+     * @return string[]
+     */
+    public function getExternalScriptUrls()
+    {
+        $scripts = [
+            $this->getViewFileUrl("Meanbee_ServiceWorker::js/lib/workbox-sw.prod.v1.0.1.js"),
+        ];
+
+        if ($this->isGaOfflineEnabled()) {
+            $scripts[] = $this->getViewFileUrl("Meanbee_ServiceWorker::js/lib/workbox-google-analytics.prod.v1.0.0.js");
+        }
+
+        return $scripts;
+    }
+
+    /**
      * Get the list of URLs unavailable for caching or viewing offline.
      *
      * @return array
@@ -62,15 +98,5 @@ class Js extends \Magento\Framework\View\Element\Template
     public function isGaOfflineEnabled()
     {
         return $this->config->isGaOfflineEnabled();
-    }
-
-    /**
-     * Get the URL to the Offline Google Analytics helper script.
-     *
-     * @return string
-     */
-    public function getGaJsUrl()
-    {
-        return $this->getViewFileUrl("Meanbee_ServiceWorker::js/lib/workbox-google-analytics.prod.v1.0.0.js");
     }
 }
