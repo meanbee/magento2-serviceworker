@@ -5,6 +5,7 @@ namespace Meanbee\ServiceWorker\Setup;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\UpgradeDataInterface;
+use Meanbee\ServiceWorker\Model\Config\Source\CachingStrategy;
 
 class UpgradeData implements UpgradeDataInterface
 {
@@ -56,7 +57,7 @@ class UpgradeData implements UpgradeDataInterface
                     array_walk($value, function (&$item) {
                         $item = [
                             "path"     => $item,
-                            "strategy" => "networkOnly",
+                            "strategy" => CachingStrategy::NETWORK_ONLY,
                         ];
                     });
 
@@ -79,9 +80,9 @@ class UpgradeData implements UpgradeDataInterface
                 // Insert default values if there are no values to migrate
                 if (!$values_migrated) {
                     $strategies = [
-                        ["path" => "checkout/", "strategy" => "networkOnly"],
-                        ["path" => "customer/account/create*", "strategy" => "networkOnly"],
-                        ["path" => "checkout/account/login*", "strategy" => "networkOnly"],
+                        ["path" => "checkout/", "strategy" => CachingStrategy::NETWORK_ONLY],
+                        ["path" => "customer/account/create*", "strategy" => CachingStrategy::NETWORK_ONLY],
+                        ["path" => "checkout/account/login*", "strategy" => CachingStrategy::NETWORK_ONLY],
                     ];
 
                     $this->configWriter->save(

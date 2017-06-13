@@ -4,6 +4,9 @@ namespace Meanbee\ServiceWorker\Model\Config\Source;
 
 class CachingStrategy implements \Magento\Framework\Option\ArrayInterface
 {
+    const CACHE_FIRST = "cacheFirst";
+    const NETWORK_FIRST = "networkFirst";
+    const NETWORK_ONLY = "networkOnly";
 
     /**
      * Get options in "key-value" format
@@ -13,9 +16,9 @@ class CachingStrategy implements \Magento\Framework\Option\ArrayInterface
     public function toArray()
     {
         return [
-            "cacheFirst"   => __("Cache First"),
-            "networkFirst" => __("Network First"),
-            "networkOnly"  => __("Network Only"),
+            static::CACHE_FIRST   => __("Cache First"),
+            static::NETWORK_FIRST => __("Network First"),
+            static::NETWORK_ONLY  => __("Network Only"),
         ];
     }
 

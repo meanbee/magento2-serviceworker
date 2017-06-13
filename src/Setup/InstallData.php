@@ -6,6 +6,7 @@ use Magento\Framework\Setup\InstallDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Store\Model\Store;
+use Meanbee\ServiceWorker\Model\Config\Source\CachingStrategy;
 
 class InstallData implements InstallDataInterface
 {
@@ -66,9 +67,9 @@ class InstallData implements InstallDataInterface
          * Add custom strategies
          */
         $strategies = [
-            ["path" => "checkout/", "strategy" => "networkOnly"],
-            ["path" => "customer/account/create*", "strategy" => "networkOnly"],
-            ["path" => "checkout/account/login*", "strategy" => "networkOnly"],
+            ["path" => "checkout/", "strategy" => CachingStrategy::NETWORK_ONLY],
+            ["path" => "customer/account/create*", "strategy" => CachingStrategy::NETWORK_ONLY],
+            ["path" => "checkout/account/login*", "strategy" => CachingStrategy::NETWORK_ONLY],
         ];
 
         $this->configWriter->save(
