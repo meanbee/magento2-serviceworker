@@ -63,7 +63,7 @@ wbsw.router.setDefaultHandler({
     handler: ({event}) => {
         switch (event.request.method) {
             case 'GET':
-                // For POST requests, use network-first with offline page fallback
+                // For GET requests, use network-first with offline page fallback
                 return wbsw.strategies.networkFirst().handle({event})
                     .then((response) => {
                         if (!response && event.request.mode == 'navigate') {
