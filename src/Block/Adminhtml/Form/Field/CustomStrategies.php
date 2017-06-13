@@ -45,7 +45,7 @@ class CustomStrategies extends \Magento\Config\Block\System\Config\Form\Field\Fi
     {
         if (!$this->strategyRenderer) {
             $this->strategyRenderer = $this->getLayout()->createBlock(
-                "Meanbee\\ServiceWorker\\Block\\Adminhtml\\Form\\Field\\CachingStrategy",
+                CachingStrategy::class,
                 "",
                 ["data" => [
                     "is_render_to_js_template" => true,
