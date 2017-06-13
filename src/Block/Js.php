@@ -77,7 +77,7 @@ class Js extends \Magento\Framework\View\Element\Template
             $scripts[] = $this->getViewFileUrl("Meanbee_ServiceWorker::js/lib/workbox-google-analytics.prod.v1.0.0.js");
         }
 
-        return $scripts;
+        return array_filter($scripts);
     }
 
     /**
