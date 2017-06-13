@@ -14,9 +14,11 @@
                     <comment><![CDATA[This CMS page will be displayed to visitors when they are browsing offline and have reached a page they haven't visited before or tried an action which is not available offline (such as adding to cart).]]></comment>
                     <source_model>Magento\Cms\Model\Config\Source\Page</source_model>
                 </field>
-                <field id="url_blacklist" translate="label comment" type="textarea" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Offline URL blacklist</label>
-                    <comment><![CDATA[A list of URL paths, one per line. Any pages entered here will not be cached and will be unavailable offline. If an entry ends with "*", any pages that start with the entered path will also be excluded.]]></comment>
+                <field id="custom_strategies" translate="label comment" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Custom Caching Strategies</label>
+                    <comment><![CDATA[Specify custom caching strategies used for specific pages. If the path ends with "*", the selected strategy will be applied to all pages starting with the entered path.]]></comment>
+                    <frontend_model>Meanbee\ServiceWorker\Block\Adminhtml\Form\Field\CustomStrategies</frontend_model>
+                    <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
                 </field>
                 <field id="ga_offline_enable" translate="label comment" type="select" sortOrder="500" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Enable Offline Google Analytics</label>

@@ -38,12 +38,12 @@ wbsw.precache([
 wbsw.router.registerRoute(/\.(png|jpeg|jpg|gif)$/, wbsw.strategies.cacheFirst());
 wbsw.router.registerRoute(/\.(js|css)$/, wbsw.strategies.cacheFirst());
 
-// Serve blacklist URLs with network-only strategy
+// Serve paths with configured custom strategies
 // #####################################
 
-const blacklist = <?php echo $block->jsonEncode($block->getUrlBlacklist()) ?>;
+const custom_strategies = <?php echo $block->jsonEncode($block->getCustomStrategies()) ?>;
 
-for (let route of blacklist) {
+for (let route of custom_strategies) {
     wbsw.router.registerRoute(route.path, ({event}) => {
         return wbsw.strategies[route.strategy]().handle({event})
             .then((response) => {

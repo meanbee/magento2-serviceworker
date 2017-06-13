@@ -81,13 +81,13 @@ class Js extends \Magento\Framework\View\Element\Template
     }
 
     /**
-     * Get the list of URLs unavailable for caching or viewing offline.
+     * Get the configured paths with custom caching strategies.
      *
-     * @return array
+     * @return \array[]
      */
-    public function getUrlBlacklist()
+    public function getCustomStrategies()
     {
-        return $this->config->getUrlBlacklist();
+        return $this->config->getCustomStrategies();
     }
 
     /**

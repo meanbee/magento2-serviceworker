@@ -17,12 +17,17 @@ class InstallData implements InstallDataInterface
     /** @var \Magento\Cms\Model\PageRepository $pageRepository */
     protected $pageRepository;
 
+    /** @var \Magento\Framework\App\Config\Storage\WriterInterface $configWriter */
+    protected $configWriter;
+
     public function __construct(
         \Magento\Cms\Model\PageFactory $pageFactory,
-        \Magento\Cms\Model\PageRepository $pageRepository
+        \Magento\Cms\Model\PageRepository $pageRepository,
+        \Magento\Framework\App\Config\Storage\WriterInterface $configWriter
     ) {
         $this->pageFactory = $pageFactory;
         $this->pageRepository = $pageRepository;
+        $this->configWriter = $configWriter;
     }
 
     /**
@@ -56,6 +61,20 @@ class InstallData implements InstallDataInterface
 
             $this->pageRepository->save($page);
         }
+
+        /**
+         * Add custom strategies
+         */
+        $strategies = [
+            ["path" => "checkout/", "strategy" => "networkOnly"],
+            ["path" => "customer/account/create*", "strategy" => "networkOnly"],
+            ["path" => "checkout/account/login*", "strategy" => "networkOnly"],
+        ];
+
+        $this->configWriter->save(
+            "web/serviceworker/custom_strategies",
+            serialize($strategies)
+        );
 
         $setup->endSetup();
     }
