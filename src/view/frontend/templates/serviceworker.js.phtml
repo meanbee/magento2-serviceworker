@@ -81,3 +81,10 @@ wbsw.router.setDefaultHandler({
         }
     },
 });
+
+<?php if ($childHtml = $block->getChildHtml()): ?>
+// Extensions
+// #####################################
+
+<?php echo $childHtml ?>
+<?php endif; ?>
