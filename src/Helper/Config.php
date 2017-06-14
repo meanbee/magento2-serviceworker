@@ -8,7 +8,7 @@ class Config extends \Magento\Framework\App\Helper\AbstractHelper
 {
     const XML_PATH_ENABLE = "web/serviceworker/enable";
     const XML_PATH_OFFLINE_PAGE = "web/serviceworker/offline_page";
-    const XML_PATH_URL_BLACKLIST = "web/serviceworker/url_blacklist";
+    const XML_PATH_CUSTOM_STRATEGIES = "web/serviceworker/custom_strategies";
     const XML_PATH_GA_OFFLINE_ENABLE = "web/serviceworker/ga_offline_enable";
 
     const PATH_WILDCARD_SYMBOL = "*";
@@ -54,33 +54,34 @@ class Config extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
-     * Get the list of URLs blacklisted from cache.
+     * Get the configured paths with custom caching strategies.
      *
-     * @return array
+     * @param string $store
+     *
+     * @return array[]
      */
-    public function getUrlBlacklist()
+    public function getCustomStrategies($store = null)
     {
-        $base_url = $this->_urlBuilder->getBaseUrl();
+        $custom_strategies = $this->scopeConfig->getValue(static::XML_PATH_CUSTOM_STRATEGIES, ScopeInterface::SCOPE_STORE, $store);
 
-        $paths = array_filter(array_map(
-            "trim",
-            explode("\n", $this->scopeConfig->getValue(static::XML_PATH_URL_BLACKLIST, ScopeInterface::SCOPE_STORE))
-        ));
-
-        $data = [
-            "full_match"   => [],
-            "prefix_match" => [],
-        ];
-
-        foreach ($paths as $path) {
-            if (substr($path, -1) == static::PATH_WILDCARD_SYMBOL) {
-                $data["prefix_match"][] = $base_url . substr($path, 0, -1);
-            } else {
-                $data["full_match"][] = $base_url . $path;
-            }
+        if (is_string($custom_strategies) && !empty($custom_strategies)) {
+            $custom_strategies = unserialize($custom_strategies);
         }
 
-        return $data;
+        if (!is_array($custom_strategies)) {
+            return [];
+        }
+
+        $base_url = $this->_urlBuilder->getBaseUrl(["_scope" => $store]);
+
+        array_walk($custom_strategies, function (&$item) use ($base_url) {
+            $item["path"] = $base_url . $item["path"];
+        });
+
+        // Reset indexes to allow encoding as JSON array
+        $custom_strategies = array_values($custom_strategies);
+
+        return $custom_strategies;
     }
 
     /**
