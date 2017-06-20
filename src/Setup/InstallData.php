@@ -6,6 +6,7 @@ use Magento\Framework\Setup\InstallDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Store\Model\Store;
+use Meanbee\ServiceWorker\Model\Config\Source\CachingStrategy;
 
 class InstallData implements InstallDataInterface
 {
@@ -17,12 +18,17 @@ class InstallData implements InstallDataInterface
     /** @var \Magento\Cms\Model\PageRepository $pageRepository */
     protected $pageRepository;
 
+    /** @var \Magento\Framework\App\Config\Storage\WriterInterface $configWriter */
+    protected $configWriter;
+
     public function __construct(
         \Magento\Cms\Model\PageFactory $pageFactory,
-        \Magento\Cms\Model\PageRepository $pageRepository
+        \Magento\Cms\Model\PageRepository $pageRepository,
+        \Magento\Framework\App\Config\Storage\WriterInterface $configWriter
     ) {
         $this->pageFactory = $pageFactory;
         $this->pageRepository = $pageRepository;
+        $this->configWriter = $configWriter;
     }
 
     /**
@@ -56,6 +62,20 @@ class InstallData implements InstallDataInterface
 
             $this->pageRepository->save($page);
         }
+
+        /**
+         * Add custom strategies
+         */
+        $strategies = [
+            ["path" => "checkout/", "strategy" => CachingStrategy::NETWORK_ONLY],
+            ["path" => "customer/account/create*", "strategy" => CachingStrategy::NETWORK_ONLY],
+            ["path" => "checkout/account/login*", "strategy" => CachingStrategy::NETWORK_ONLY],
+        ];
+
+        $this->configWriter->save(
+            "web/serviceworker/custom_strategies",
+            serialize($strategies)
+        );
 
         $setup->endSetup();
     }

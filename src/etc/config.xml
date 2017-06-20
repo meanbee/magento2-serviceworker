@@ -5,10 +5,6 @@
             <serviceworker>
                 <enable>1</enable>
                 <offline_page>offline</offline_page>
-                <url_blacklist><![CDATA[checkout/
-customer/account/create*
-customer/account/login*
-]]></url_blacklist>
                 <ga_offline_enable>1</ga_offline_enable>
             </serviceworker>
         </web>
