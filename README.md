@@ -15,9 +15,24 @@ Add this extension to your Magento installation with Composer:
 
 ## Usage
 
+### Configuration
+
 The Service Worker is configured and enabled by default. However, Service Workers require the site to run on HTTPS.
 
 Features can be customised in *Stores > Configuration > General > Web > Service Worker Settings*.
+
+### Adding more logic
+
+If the base service worker file doesn't fit all of your needs you can easily add more logic using the layout system, targeting the `serviceworker_index_js` handle:
+
+    <?xml version="1.0"?>
+    <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+        <body>
+            <referenceBlock name="serviceworker">
+                <block class="\Meanbee\MoreLogic\Block\Logic" name="morelogic.logic" template="Meanbee_MoreLogic::logic.phtml" />
+            </referenceBlock>
+        </body>
+    </page>
 
 ## FAQ
 
