@@ -46,10 +46,8 @@ Magento 2 uses a timestamp version string in the URL for static files to allow b
 
 A Docker development environment is included with the project:
 
-    mkdir magento
-    docker-compose up -d db # Allow a few seconds for the db to initalise
-    docker-compose run --rm cli bash /src/setup.sh
-    docker-compose up -d
+    docker-compose run --rm cli magento-extension-installer Meanbee_ServiceWorker \
+    && docker-compose up -d
 
 ### npm dependencies
 
