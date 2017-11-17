@@ -2,82 +2,72 @@ version: "2"
 services:
   varnish:
     image: meanbee/magento2-varnish:latest
-    hostname: m2-meanbee-serviceworker.docker
+    hostname: ${PROJECT_HOSTNAME}
     ports:
       - 80
     environment:
-      - VIRTUAL_HOST=m2-meanbee-serviceworker.docker
-      - VIRTUAL_PORT=80
-      - HTTPS_METHOD=noredirect
-      - CERT_NAME=default
+      VIRTUAL_HOST: ${PROJECT_HOSTNAME}
+      VIRTUAL_PORT: 80
+      HTTPS_METHOD: noredirect
+      CERT_NAME: ${PROJECT_CERT}
     links:
       - web
 
   web:
     image: meanbee/magento2-nginx:1.9
-    hostname: web.m2-meanbee-serviceworker.docker
+    hostname: web.${PROJECT_HOSTNAME}
     ports:
       - 80
     volumes_from:
-      - appdata
-    env_file:
-      - ./magento.env
+      - magento
     links:
       - fpm
 
   fpm:
     image: meanbee/magento2-php:7.0-fpm
-    hostname: fpm.m2-meanbee-serviceworker.docker
+    hostname: fpm.${PROJECT_HOSTNAME}
     ports:
       - 9000
     volumes_from:
-      - appdata
-    env_file:
-      - ./magento.env
+      - magento
     environment:
-      - ENABLE_SENDMAIL=true
-      - PHP_ENABLE_XDEBUG
+      ENABLE_SENDMAIL: "true"
+      PHP_ENABLE_XDEBUG:
     links:
       - db
 
   cron:
     image: meanbee/magento2-php:7.0-cli
-    hostname: cron.m2-meanbee-serviceworker.docker
+    hostname: cron.${PROJECT_HOSTNAME}
     command: run-cron
     volumes_from:
-      - appdata
-    env_file:
-      - ./magento.env
+      - magento
     environment:
-      - ENABLE_SENDMAIL=true
+      ENABLE_SENDMAIL: "true"
     links:
       - db
 
   cli:
     image: meanbee/magento2-php:7.0-cli
     volumes_from:
-      - appdata
-    volumes:
-      - ~/.composer:/root/.composer
-    env_file:
-      - ./magento.env
+      - magento
     environment:
-      - COMPOSER_HOME=/root/.composer
-      - COMPOSER_ALLOW_SUPERUSER=1
-      - M2SETUP_INSTALL_DB=true
-      - M2SETUP_VERSION=2.1.*
-      - M2SETUP_USE_SAMPLE_DATA=true
-      - M2SETUP_DB_HOST=db
-      - M2SETUP_DB_NAME=magento2
-      - M2SETUP_DB_USER=magento2
-      - M2SETUP_DB_PASSWORD=magento2
-      - M2SETUP_BASE_URL=https://m2-meanbee-serviceworker.docker/
-      - M2SETUP_BACKEND_FRONTNAME=admin
-      - M2SETUP_ADMIN_FIRSTNAME=Admin
-      - M2SETUP_ADMIN_LASTNAME=User
-      - M2SETUP_ADMIN_EMAIL=admin@example.com
-      - M2SETUP_ADMIN_USER=admin
-      - M2SETUP_ADMIN_PASSWORD=password123
+      COMPOSER_HOME: /root/.composer
+      COMPOSER_ALLOW_SUPERUSER: 1
+      M2SETUP_INSTALL_DB: "true"
+      M2SETUP_VERSION: 2.2.*
+      M2SETUP_USE_SAMPLE_DATA: "true"
+      M2SETUP_DB_HOST: db
+      M2SETUP_DB_NAME: magento2
+      M2SETUP_DB_USER: magento2
+      M2SETUP_DB_PASSWORD: magento2
+      M2SETUP_BASE_URL: https://${PROJECT_HOSTNAME}/
+      M2SETUP_BACKEND_FRONTNAME: admin
+      M2SETUP_ADMIN_FIRSTNAME: Admin
+      M2SETUP_ADMIN_LASTNAME: User
+      M2SETUP_ADMIN_EMAIL: admin@example.com
+      M2SETUP_ADMIN_USER: admin
+      M2SETUP_ADMIN_PASSWORD: password123
     links:
       - db
 
@@ -88,38 +78,29 @@ services:
     volumes:
       - ~/.npm:/.npm
     volumes_from:
-      - appdata
+      - magento
 
   db:
     image: mariadb:10
     ports:
       - 3306
-    volumes_from:
-      - dbdata
-    env_file:
-      - ./magento.env
-    environment:
-      - MYSQL_ROOT_PASSWORD=magento2
-      - MYSQL_USER=magento2
-      - MYSQL_PASSWORD=magento2
-      - MYSQL_DATABASE=magento2
-      - TERM=dumb
-
-  appdata:
-    image: cweagans/bg-sync
     volumes:
-      - /var/www/magento
-      - .:/src
+      - dbdata:/var/lib/mysql
     environment:
-      - SYNC_SOURCE=/var/www/magento
-      - SYNC_DESTINATION=/src/magento
-      - SYNC_VERBOSE=1
-      - SYNC_MAX_INOTIFY_WATCHES=64000
+      MYSQL_ROOT_PASSWORD: magento2
+      MYSQL_USER: magento2
+      MYSQL_PASSWORD: magento2
+      MYSQL_DATABASE: magento2
+      TERM: dumb
+
+  magento:
+    image: meanbee/magento2-data:2.2-sample
+    volumes:
+      - .:/extensions/Meanbee_ServiceWorker
+    environment:
+      SYNC_DESTINATION: /extensions/Meanbee_ServiceWorker/magento
     privileged: true
-    restart: on-failure:5
 
+volumes:
   dbdata:
-    image: tianon/true
-    volumes:
-      - /var/lib/mysql
-
+    # Database tables
