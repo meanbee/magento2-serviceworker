@@ -2,7 +2,7 @@
   "name": "meanbee/magento2-serviceworker",
   "description": "A Magento 2 extension that adds Service Worker support.",
   "type": "magento2-module",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "license": [
     "MIT"
   ],
@@ -19,7 +19,7 @@
     }
   },
   "require": {
-    "magento/framework": "^102.0.0",
+    "magento/framework": "^101.0.0",
     "magento/module-backend": "^100.1.1",
     "magento/module-config": "^102.0.0",
     "magento/module-cms": "^103.0.0"
