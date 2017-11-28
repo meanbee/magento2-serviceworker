@@ -15,12 +15,17 @@ class UpgradeData implements UpgradeDataInterface
     /** @var \Magento\Framework\App\Config\Storage\WriterInterface $configWriter */
     protected $configWriter;
 
+    /** @var \Magento\Framework\Serialize\Serializer\Json $serializer */
+    protected $serializer;
+
     public function __construct(
         \Magento\Framework\App\Config\ValueInterface $configReader,
-        \Magento\Framework\App\Config\Storage\WriterInterface $configWriter
+        \Magento\Framework\App\Config\Storage\WriterInterface $configWriter,
+        \Magento\Framework\Serialize\Serializer\Json $serializer
     ) {
         $this->configReader = $configReader;
         $this->configWriter = $configWriter;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -63,7 +68,7 @@ class UpgradeData implements UpgradeDataInterface
 
                     $this->configWriter->save(
                         "web/serviceworker/custom_strategies",
-                        serialize($value),
+                        $this->serializer->serialize($value),
                         $config->getScope(),
                         $config->getScopeId()
                     );
@@ -87,7 +92,7 @@ class UpgradeData implements UpgradeDataInterface
 
                     $this->configWriter->save(
                         "web/serviceworker/custom_strategies",
-                        serialize($strategies)
+                        $this->serializer->serialize($strategies)
                     );
                 }
             }
