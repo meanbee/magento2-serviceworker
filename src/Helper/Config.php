@@ -21,15 +21,20 @@ class Config extends \Magento\Framework\App\Helper\AbstractHelper
     /** @var \Magento\Framework\App\DeploymentConfig $deploymentConfig */
     protected $deploymentConfig;
 
+    /** @var \Magento\Framework\Serialize\Serializer\Json $serializer */
+    protected $serializer;
+
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
         \Magento\Cms\Helper\Page $cmsPageHelper,
-        \Magento\Framework\App\DeploymentConfig $deploymentConfig
+        \Magento\Framework\App\DeploymentConfig $deploymentConfig,
+        \Magento\Framework\Serialize\Serializer\Json $serializer
     ) {
         parent::__construct($context);
 
         $this->cmsPageHelper = $cmsPageHelper;
         $this->deploymentConfig = $deploymentConfig;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -82,7 +87,7 @@ class Config extends \Magento\Framework\App\Helper\AbstractHelper
         $custom_strategies = $this->scopeConfig->getValue(static::XML_PATH_CUSTOM_STRATEGIES, ScopeInterface::SCOPE_STORE, $store);
 
         if (is_string($custom_strategies) && !empty($custom_strategies)) {
-            $custom_strategies = unserialize($custom_strategies);
+            $custom_strategies = $this->serializer->unserialize($custom_strategies);
         }
 
         if (!is_array($custom_strategies)) {
