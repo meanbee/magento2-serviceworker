@@ -21,14 +21,19 @@ class InstallData implements InstallDataInterface
     /** @var \Magento\Framework\App\Config\Storage\WriterInterface $configWriter */
     protected $configWriter;
 
+    /** @var \Magento\Framework\Serialize\Serializer\Json $serializer */
+    protected $serializer;
+
     public function __construct(
         \Magento\Cms\Model\PageFactory $pageFactory,
         \Magento\Cms\Model\PageRepository $pageRepository,
-        \Magento\Framework\App\Config\Storage\WriterInterface $configWriter
+        \Magento\Framework\App\Config\Storage\WriterInterface $configWriter,
+        \Magento\Framework\Serialize\Serializer\Json $serializer
     ) {
         $this->pageFactory = $pageFactory;
         $this->pageRepository = $pageRepository;
         $this->configWriter = $configWriter;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -74,7 +79,7 @@ class InstallData implements InstallDataInterface
 
         $this->configWriter->save(
             "web/serviceworker/custom_strategies",
-            serialize($strategies)
+            $this->serializer->serialize($strategies)
         );
 
         $setup->endSetup();
