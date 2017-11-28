@@ -81,6 +81,16 @@ class Js extends \Magento\Framework\View\Element\Template
     }
 
     /**
+     * Get the path prefix for backend requests.
+     *
+     * @return string
+     */
+    public function getBackendPathPrefix()
+    {
+        return $this->config->getBackendPathPrefix();
+    }
+
+    /**
      * Get the configured paths with custom caching strategies.
      *
      * @return \array[]
