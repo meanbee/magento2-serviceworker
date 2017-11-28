@@ -18,17 +18,22 @@ class Config extends \Magento\Framework\App\Helper\AbstractHelper
     /** @var \Magento\Cms\Helper\Page $cmsPageHelper */
     protected $cmsPageHelper;
 
+    /** @var \Magento\Framework\App\DeploymentConfig $deploymentConfig */
+    protected $deploymentConfig;
+
     /** @var \Magento\Framework\Serialize\Serializer\Json $serializer */
     protected $serializer;
 
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
         \Magento\Cms\Helper\Page $cmsPageHelper,
+        \Magento\Framework\App\DeploymentConfig $deploymentConfig,
         \Magento\Framework\Serialize\Serializer\Json $serializer
     ) {
         parent::__construct($context);
 
         $this->cmsPageHelper = $cmsPageHelper;
+        $this->deploymentConfig = $deploymentConfig;
         $this->serializer = $serializer;
     }
 
@@ -56,6 +61,18 @@ class Config extends \Magento\Framework\App\Helper\AbstractHelper
         if ($identifier = $this->scopeConfig->getValue(static::XML_PATH_OFFLINE_PAGE, ScopeInterface::SCOPE_STORE)) {
             return $this->cmsPageHelper->getPageUrl($identifier);
         }
+    }
+
+    /**
+     * Get the prefix path for backend requests.
+     *
+     * @return string
+     */
+    public function getBackendPathPrefix()
+    {
+        return $this->_urlBuilder->getBaseUrl()
+            . $this->deploymentConfig->get(\Magento\Backend\Setup\ConfigOptionsList::CONFIG_PATH_BACKEND_FRONTNAME)
+            . "/*";
     }
 
     /**

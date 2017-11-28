@@ -38,6 +38,11 @@ wbsw.precache([
 wbsw.router.registerRoute(/\.(png|jpeg|jpg|gif)$/, wbsw.strategies.cacheFirst());
 wbsw.router.registerRoute(/\.(js|css)$/, wbsw.strategies.cacheFirst());
 
+// Serve backend requests with network-only strategy
+// #####################################
+
+wbsw.router.registerRoute('<?php echo $block->getBackendPathPrefix() ?>', wbsw.strategies.networkOnly());
+
 // Serve paths with configured custom strategies
 // #####################################
 
