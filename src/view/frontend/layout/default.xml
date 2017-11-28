@@ -2,7 +2,7 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceContainer name="after.body.start">
-            <block class="\Meanbee\ServiceWorker\Block\Register" name="serviceworker.register" template="Meanbee_ServiceWorker::register.phtml" />
+            <block class="Meanbee\ServiceWorker\Block\Register" name="serviceworker.register" template="Meanbee_ServiceWorker::register.phtml" />
         </referenceContainer>
     </body>
 </page>
