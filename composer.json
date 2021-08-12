@@ -1,5 +1,5 @@
 {
-  "name": "salamanov/magento2-serviceworker",
+  "name": "meanbee/magento2-serviceworker",
   "description": "A Magento 2 extension that adds Service Worker support.",
   "type": "magento2-module",
   "version": "2.2.0",
