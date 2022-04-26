@@ -4,8 +4,12 @@
 // Import and initialise external dependencies
 // #####################################
 
-<?php if ($externalScripts = $block->getExternalScriptUrls()): ?>
-importScripts(<?php echo implode(", ", array_map(function ($url) { return "'{$url}'"; }, $externalScripts)) ?>);
+<?php if ($urlServiceWorkerJs = $block->getUrlServiceWorkerJs()): ?>
+importScripts('<?= $block->escapeUrl($urlServiceWorkerJs) ?>');
+<?php endif; ?>
+
+<?php if ($urlServiceWorkerGA = $block->getUrlServiceWorkerGA()): ?>
+importScripts('<?= $block->escapeUrl($urlServiceWorkerGA) ?>');
 <?php endif; ?>
 
 <?php if ($block->isGaOfflineEnabled()): ?>
@@ -23,30 +27,30 @@ const wbsw = new WorkboxSW({
 // Pre-cache fallback responses
 // #####################################
 
-const OFFLINE_PAGE_URL = '<?php echo $block->getOfflinePageUrl() ?>';
+const OFFLINE_PAGE_URL = '<?= $block->escapeUrl($block->getOfflinePageUrl()) ?>';
 
 wbsw.precache([
     {
         url: OFFLINE_PAGE_URL,
-        revision: '<?php echo $block->getVersion() ?>',
+        revision: '<?= $block->escapeHtmlAttr($block->getVersion()) ?>',
     }
 ]);
 
 // Serve assets using cache-first strategy
 // #####################################
 
-wbsw.router.registerRoute(/\.(png|jpeg|jpg|gif)$/, wbsw.strategies.cacheFirst());
+wbsw.router.registerRoute(/\.(png|jpeg|jpg|gif|webp|svg)$/, wbsw.strategies.cacheFirst());
 wbsw.router.registerRoute(/\.(js|css)$/, wbsw.strategies.cacheFirst());
 
 // Serve backend requests with network-only strategy
 // #####################################
 
-wbsw.router.registerRoute('<?php echo $block->getBackendPathPrefix() ?>', wbsw.strategies.networkOnly());
+wbsw.router.registerRoute('<?= $block->escapeUrl($block->getBackendPathPrefix()) ?>', wbsw.strategies.networkOnly());
 
 // Serve paths with configured custom strategies
 // #####################################
 
-const custom_strategies = <?php echo $block->jsonEncode($block->getCustomStrategies()) ?>;
+const custom_strategies = <?= /** @noEscape */ $block->jsonEncode($block->getCustomStrategies()) ?>;
 
 for (let route of custom_strategies) {
     wbsw.router.registerRoute(route.path, ({event}) => {
@@ -87,9 +91,15 @@ wbsw.router.setDefaultHandler({
     },
 });
 
-<?php if ($childHtml = $block->getChildHtml()): ?>
+self.addEventListener('install', event => {
+    event.waitUntil(
+        self.skipWaiting()
+    );
+});
+
+<?php if ($block->getChildHtml()): ?>
 // Extensions
 // #####################################
 
-<?php echo $childHtml ?>
+    <?= $block->getChildHtml() ?>
 <?php endif; ?>

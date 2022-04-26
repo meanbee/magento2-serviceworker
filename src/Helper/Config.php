@@ -2,36 +2,52 @@
 
 namespace Meanbee\ServiceWorker\Helper;
 
+use Magento\Framework\App\DeploymentConfig;
+use Magento\Framework\App\Helper\Context;
+use Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Store\Model\ScopeInterface;
+use Magento\Cms\Helper\Page;
 
-class Config extends \Magento\Framework\App\Helper\AbstractHelper
+class Config extends AbstractHelper
 {
-    const XML_PATH_ENABLE = "web/serviceworker/enable";
-    const XML_PATH_OFFLINE_PAGE = "web/serviceworker/offline_page";
-    const XML_PATH_CUSTOM_STRATEGIES = "web/serviceworker/custom_strategies";
-    const XML_PATH_GA_OFFLINE_ENABLE = "web/serviceworker/ga_offline_enable";
+    public const XML_PATH_ENABLE = "web/serviceworker/enable";
+    public const XML_PATH_OFFLINE_PAGE = "web/serviceworker/offline_page";
+    public const XML_PATH_CUSTOM_STRATEGIES = "web/serviceworker/custom_strategies";
+    public const XML_PATH_GA_OFFLINE_ENABLE = "web/serviceworker/ga_offline_enable";
+    public const PATH_WILDCARD_SYMBOL = "*";
+    public const SERVICEWORKER_ENDPOINT = "serviceworker.js";
 
-    const PATH_WILDCARD_SYMBOL = "*";
-
-    const SERVICEWORKER_ENDPOINT = "serviceworker.js";
-
-    /** @var \Magento\Cms\Helper\Page $cmsPageHelper */
+    /**
+     * @var Page
+     */
     protected $cmsPageHelper;
 
-    /** @var \Magento\Framework\App\DeploymentConfig $deploymentConfig */
+    /**
+     * @var DeploymentConfig
+     */
     protected $deploymentConfig;
 
-    /** @var \Magento\Framework\Serialize\Serializer\Json $serializer */
+    /**
+     * @var Json
+     */
     protected $serializer;
 
+    /**
+     * Construct.
+     *
+     * @param Context $context
+     * @param Page $cmsPageHelper
+     * @param DeploymentConfig $deploymentConfig
+     * @param Json $serializer
+     */
     public function __construct(
-        \Magento\Framework\App\Helper\Context $context,
-        \Magento\Cms\Helper\Page $cmsPageHelper,
-        \Magento\Framework\App\DeploymentConfig $deploymentConfig,
-        \Magento\Framework\Serialize\Serializer\Json $serializer
+        Context $context,
+        Page $cmsPageHelper,
+        DeploymentConfig $deploymentConfig,
+        Json $serializer
     ) {
         parent::__construct($context);
-
         $this->cmsPageHelper = $cmsPageHelper;
         $this->deploymentConfig = $deploymentConfig;
         $this->serializer = $serializer;
@@ -58,7 +74,8 @@ class Config extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getOfflinePageUrl()
     {
-        if ($identifier = $this->scopeConfig->getValue(static::XML_PATH_OFFLINE_PAGE, ScopeInterface::SCOPE_STORE)) {
+        $identifier = $this->scopeConfig->getValue(static::XML_PATH_OFFLINE_PAGE, ScopeInterface::SCOPE_STORE);
+        if ($identifier) {
             return $this->cmsPageHelper->getPageUrl($identifier);
         }
     }
@@ -84,26 +101,30 @@ class Config extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getCustomStrategies($store = null)
     {
-        $custom_strategies = $this->scopeConfig->getValue(static::XML_PATH_CUSTOM_STRATEGIES, ScopeInterface::SCOPE_STORE, $store);
+        $customStrategies = $this->scopeConfig->getValue(
+            static::XML_PATH_CUSTOM_STRATEGIES,
+            ScopeInterface::SCOPE_STORE,
+            $store
+        );
 
-        if (is_string($custom_strategies) && !empty($custom_strategies)) {
-            $custom_strategies = $this->serializer->unserialize($custom_strategies);
+        if (is_string($customStrategies) && !empty($customStrategies)) {
+            $customStrategies = $this->serializer->unserialize($customStrategies);
         }
 
-        if (!is_array($custom_strategies)) {
+        if (!is_array($customStrategies)) {
             return [];
         }
 
-        $base_url = $this->_urlBuilder->getBaseUrl(["_scope" => $store]);
+        $baseUrl = $this->_urlBuilder->getBaseUrl(["_scope" => $store]);
 
-        array_walk($custom_strategies, function (&$item) use ($base_url) {
-            $item["path"] = $base_url . $item["path"];
+        array_walk($customStrategies, function (&$item) use ($baseUrl) {
+            $item["path"] = $baseUrl . $item["path"];
         });
 
         // Reset indexes to allow encoding as JSON array
-        $custom_strategies = array_values($custom_strategies);
+        $customStrategies = array_values($customStrategies);
 
-        return $custom_strategies;
+        return $customStrategies;
     }
 
     /**

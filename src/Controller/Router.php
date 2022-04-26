@@ -3,31 +3,45 @@
 namespace Meanbee\ServiceWorker\Controller;
 
 use Meanbee\ServiceWorker\Helper\Config;
+use Magento\Framework\App\RouterInterface;
+use Magento\Framework\App\ActionFactory;
+use Magento\Framework\App\Action\Forward;
+use Magento\Framework\App\RequestInterface;
 
-class Router implements \Magento\Framework\App\RouterInterface
+class Router implements RouterInterface
 {
 
-    /** @var \Magento\Framework\App\ActionFactory $actionFactory */
+    /**
+     * @var ActionFactory
+     */
     protected $actionFactory;
 
+    /**
+     * Construct.
+     *
+     * @param ActionFactory $actionFactory
+     */
     public function __construct(
-        \Magento\Framework\App\ActionFactory $actionFactory
+        ActionFactory $actionFactory
     ) {
         $this->actionFactory = $actionFactory;
     }
 
     /**
-     * @inheritdoc
+     * Match.
+     *
+     * @param RequestInterface $request
+     * @return Forward|null
      */
-    public function match(\Magento\Framework\App\RequestInterface $request)
+    public function match(RequestInterface $request)
     {
         if (trim($request->getPathInfo(), "/") == Config::SERVICEWORKER_ENDPOINT) {
             $request
                 ->setModuleName("serviceworker")
                 ->setControllerName("index")
                 ->setActionName("js");
-
-            return $this->actionFactory->create('Magento\Framework\App\Action\Forward');
+            
+            return $this->actionFactory->create(Forward::class);
         }
 
         return null;

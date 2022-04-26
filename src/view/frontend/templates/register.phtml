@@ -4,7 +4,7 @@
         (() => {
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker
-                    .register('<?php echo $block->getServiceWorkerJsUrl() ?>')
+                    .register('<?= $block->escapeUrl($block->getServiceWorkerJsUrl()) ?>')
                     .catch(err => {
                         console.log('Service worker registration failed: ', err);
                     });

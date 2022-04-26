@@ -5,23 +5,40 @@ namespace Meanbee\ServiceWorker\Setup;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\UpgradeDataInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\Config\Storage\WriterInterface;
+use Magento\Framework\Serialize\Serializer\Json;
+use Magento\Framework\App\Config\ValueInterface;
 use Meanbee\ServiceWorker\Model\Config\Source\CachingStrategy;
 
 class UpgradeData implements UpgradeDataInterface
 {
-    /** @var \Magento\Framework\App\Config\ScopeConfigInterface $configReader */
+    /**
+     * @var ScopeConfigInterface
+     */
     protected $configReader;
 
-    /** @var \Magento\Framework\App\Config\Storage\WriterInterface $configWriter */
+    /**
+     * @var WriterInterface
+     */
     protected $configWriter;
 
-    /** @var \Magento\Framework\Serialize\Serializer\Json $serializer */
+    /**
+     * @var Json
+     */
     protected $serializer;
 
+    /**
+     * Construct.
+     *
+     * @param ValueInterface $configReader
+     * @param WriterInterface $configWriter
+     * @param Json $serializer
+     */
     public function __construct(
-        \Magento\Framework\App\Config\ValueInterface $configReader,
-        \Magento\Framework\App\Config\Storage\WriterInterface $configWriter,
-        \Magento\Framework\Serialize\Serializer\Json $serializer
+        ValueInterface $configReader,
+        WriterInterface $configWriter,
+        Json $serializer
     ) {
         $this->configReader = $configReader;
         $this->configWriter = $configWriter;
@@ -50,7 +67,7 @@ class UpgradeData implements UpgradeDataInterface
                 $collection = $this->configReader->getCollection()
                     ->addFieldToFilter("path", "web/serviceworker/url_blacklist");
 
-                $values_migrated = false;
+                $valuesMigrated = false;
 
                 foreach ($collection as $config) {
                     /** @var \Magento\Framework\App\Config\Value $config */
@@ -79,11 +96,11 @@ class UpgradeData implements UpgradeDataInterface
                         $config->getScopeId()
                     );
 
-                    $values_migrated = true;
+                    $valuesMigrated = true;
                 }
 
                 // Insert default values if there are no values to migrate
-                if (!$values_migrated) {
+                if (!$valuesMigrated) {
                     $strategies = [
                         ["path" => "checkout/", "strategy" => CachingStrategy::NETWORK_ONLY],
                         ["path" => "customer/account/create*", "strategy" => CachingStrategy::NETWORK_ONLY],

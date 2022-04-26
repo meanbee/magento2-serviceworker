@@ -2,16 +2,18 @@
 
 namespace Meanbee\ServiceWorker\Model\Config\Source;
 
-class CachingStrategy implements \Magento\Framework\Option\ArrayInterface
+use Magento\Framework\Option\ArrayInterface;
+
+class CachingStrategy implements ArrayInterface
 {
-    const CACHE_FIRST = "cacheFirst";
-    const NETWORK_FIRST = "networkFirst";
-    const NETWORK_ONLY = "networkOnly";
+    public const CACHE_FIRST = "cacheFirst";
+    public const NETWORK_FIRST = "networkFirst";
+    public const NETWORK_ONLY = "networkOnly";
 
     /**
      * Get options in "key-value" format
      *
-     * @return string[]
+     * @return array
      */
     public function toArray()
     {
@@ -23,7 +25,9 @@ class CachingStrategy implements \Magento\Framework\Option\ArrayInterface
     }
 
     /**
-     * @inheritdoc
+     * To Option Array.
+     *
+     * @return array
      */
     public function toOptionArray()
     {

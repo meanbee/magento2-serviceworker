@@ -2,13 +2,23 @@
 
 namespace Meanbee\ServiceWorker\Block\Adminhtml\Form\Field;
 
-class CustomStrategies extends \Magento\Config\Block\System\Config\Form\Field\FieldArray\AbstractFieldArray
+use Magento\Framework\DataObject;
+use Magento\Config\Block\System\Config\Form\Field\FieldArray\AbstractFieldArray;
+use Meanbee\ServiceWorker\Block\Adminhtml\Form\Field\CachingStrategy;
+
+class CustomStrategies extends AbstractFieldArray
 {
-    /** @var CachingStrategy */
+    /**
+     * @var CachingStrategy
+     */
     protected $strategyRenderer;
 
     /**
-     * @inheritdoc
+     * Prepare to render.
+     *
+     * @return void
+     *
+     * @SuppressWarnings(PHPMD.CamelCaseMethodName)
      */
     protected function _prepareToRender()
     {
@@ -25,9 +35,14 @@ class CustomStrategies extends \Magento\Config\Block\System\Config\Form\Field\Fi
     }
 
     /**
-     * @inheritdoc
+     * Prepare Array Row.
+     *
+     * @param DataObject $row
+     *
+     * @return void
+     * @SuppressWarnings(PHPMD.CamelCaseMethodName)
      */
-    protected function _prepareArrayRow(\Magento\Framework\DataObject $row)
+    protected function _prepareArrayRow(DataObject $row)
     {
         $optionName = sprintf("option_%s", $this->getStrategyRenderer()->calcOptionHash($row->getData("strategy")));
 

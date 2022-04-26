@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <layout xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/layout_generic.xsd">
-    <container name="root">
+    <container name="before.body.end">
         <block class="Meanbee\ServiceWorker\Block\Js" name="serviceworker" template="Meanbee_ServiceWorker::serviceworker.js.phtml"/>
     </container>
 </layout>

@@ -2,15 +2,26 @@
 
 namespace Meanbee\ServiceWorker\Block;
 
+use Magento\Framework\View\Element\Template;
+use Magento\Framework\View\Element\Template\Context;
 use Meanbee\ServiceWorker\Helper\Config;
 
-class Register extends \Magento\Framework\View\Element\Template
+class Register extends Template
 {
-    /** @var Config $config */
+    /**
+     * @var Config
+     */
     protected $config;
 
+    /**
+     * Construct.
+     *
+     * @param Context   $context
+     * @param Config    $config
+     * @param array     $data
+     */
     public function __construct(
-        \Magento\Framework\View\Element\Template\Context $context,
+        Context $context,
         Config $config,
         array $data
     ) {

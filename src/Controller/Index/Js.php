@@ -2,26 +2,38 @@
 
 namespace Meanbee\ServiceWorker\Controller\Index;
 
-class Js extends \Magento\Framework\App\Action\Action
+use Magento\Framework\App\Action\Action;
+use Magento\Framework\App\Action\Context;
+use Magento\Framework\View\Result\LayoutFactory;
+
+/**
+ * @SuppressWarnings(PHPMD.ShortClassName)
+ */
+class Js extends Action
 {
-    /** @var \Magento\Framework\View\Result\LayoutFactory $layoutFactory */
+    /**
+     * @var LayoutFactory
+     */
     protected $layoutFactory;
 
     /**
      * Index constructor.
      *
-     * @param \Magento\Framework\App\Action\Context $context
+     * @param Context       $context
+     * @param LayoutFactory $layoutFactory
      */
     public function __construct(
-        \Magento\Framework\App\Action\Context $context,
-        \Magento\Framework\View\Result\LayoutFactory $layoutFactory
+        Context $context,
+        LayoutFactory $layoutFactory
     ) {
         $this->layoutFactory = $layoutFactory;
         parent::__construct($context);
     }
 
     /**
-     * @inheritdoc
+     * Execute.
+     *
+     * @return LayoutFactory
      */
     public function execute()
     {

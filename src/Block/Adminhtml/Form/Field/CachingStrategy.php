@@ -2,14 +2,24 @@
 
 namespace Meanbee\ServiceWorker\Block\Adminhtml\Form\Field;
 
-use \Magento\Framework\View\Element;
+use Magento\Framework\View\Element;
+use Magento\Framework\View\Element\Context;
+use Magento\Framework\View\Element\Html\Select;
+use Meanbee\ServiceWorker\Model\Config\Source\CachingStrategy as OptCachingStrategy;
 
-class CachingStrategy extends Element\Html\Select
+class CachingStrategy extends Select
 {
 
+    /**
+     * Construct.
+     *
+     * @param Context            $context
+     * @param OptCachingStrategy $optionsProvider
+     * @param array              $data
+     */
     public function __construct(
-        Element\Context $context,
-        \Meanbee\ServiceWorker\Model\Config\Source\CachingStrategy $optionsProvider,
+        Context $context,
+        OptCachingStrategy $optionsProvider,
         array $data = []
     ) {
         parent::__construct($context, $data);

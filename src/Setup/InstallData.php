@@ -7,33 +7,64 @@ use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Store\Model\Store;
 use Meanbee\ServiceWorker\Model\Config\Source\CachingStrategy;
+use Magento\Cms\Model\PageFactory;
+use Magento\Cms\Model\PageRepository;
+use Magento\Framework\App\Config\Storage\WriterInterface;
+use Magento\Framework\Serialize\Serializer\Json;
+use Magento\Framework\App\ObjectManager;
+use Magento\Framework\Filesystem\Driver\File;
+use Magento\Framework\Filesystem\DriverInterface;
 
 class InstallData implements InstallDataInterface
 {
-    const CMS_TEMPLATE_DIR = "cms";
+    public const CMS_TEMPLATE_DIR = "cms";
 
-    /** @var \Magento\Cms\Model\PageFactory $pageFactory */
+    /**
+     * @var PageFactory
+     */
     protected $pageFactory;
 
-    /** @var \Magento\Cms\Model\PageRepository $pageRepository */
+    /**
+     * @var PageRepository
+     */
     protected $pageRepository;
 
-    /** @var \Magento\Framework\App\Config\Storage\WriterInterface $configWriter */
+    /**
+     * @var WriterInterface
+     */
     protected $configWriter;
 
-    /** @var \Magento\Framework\Serialize\Serializer\Json $serializer */
+    /**
+     * @var Json
+     */
     protected $serializer;
 
+    /**
+     * @var DriverInterface
+     */
+    protected $fileDriver;
+
+    /**
+     * Construct.
+     *
+     * @param PageFactory $pageFactory
+     * @param PageRepository $pageRepository
+     * @param WriterInterface $configWriter
+     * @param Json $serializer
+     * @param DriverInterface $fileDriver
+     */
     public function __construct(
-        \Magento\Cms\Model\PageFactory $pageFactory,
-        \Magento\Cms\Model\PageRepository $pageRepository,
-        \Magento\Framework\App\Config\Storage\WriterInterface $configWriter,
-        \Magento\Framework\Serialize\Serializer\Json $serializer
+        PageFactory $pageFactory,
+        PageRepository $pageRepository,
+        WriterInterface $configWriter,
+        Json $serializer,
+        DriverInterface $fileDriver
     ) {
         $this->pageFactory = $pageFactory;
         $this->pageRepository = $pageRepository;
         $this->configWriter = $configWriter;
         $this->serializer = $serializer;
+        $this->fileDriver = $fileDriver ?? ObjectManager::getInstance()->get(File::class);
     }
 
     /**
@@ -46,6 +77,7 @@ class InstallData implements InstallDataInterface
      */
     public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
+        $context = $context;
         $setup->startSetup();
 
         /**
@@ -99,9 +131,10 @@ class InstallData implements InstallDataInterface
             static::CMS_TEMPLATE_DIR,
             $identifier
         ]);
-
-        if (is_file($file) && is_readable($file)) {
-            return file_get_contents($file);
+        
+        if ($this->fileDriver->isFile($file) && $this->fileDriver->isReadable($file)) {
+            
+            return $this->fileDriver->fileGetContents($file);
         }
 
         return "";

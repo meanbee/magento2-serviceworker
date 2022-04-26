@@ -2,20 +2,40 @@
 
 namespace Meanbee\ServiceWorker\Block;
 
-class Js extends \Magento\Framework\View\Element\Template
-{
-    const VERSION_PREFIX = "mbsw";
+use Magento\Framework\Json\Helper\Data;
+use Magento\Framework\View\Element\Template;
+use Magento\Framework\View\Element\Template\Context;
+use Meanbee\ServiceWorker\Helper\Config;
 
-    /** @var \Meanbee\ServiceWorker\Helper\Config $config */
+/**
+ * @SuppressWarnings(PHPMD.ShortClassName)
+ */
+class Js extends Template
+{
+    public const VERSION_PREFIX = "mbsw";
+
+    /**
+     * @var Config
+     */
     protected $config;
 
-    /** @var  \Magento\Framework\Json\Helper\Data $jsonHelper */
+    /**
+     * @var Data
+     */
     protected $jsonHelper;
 
+    /**
+     * Construct.
+     *
+     * @param Context   $context
+     * @param Config    $config
+     * @param Data      $jsonHelper
+     * @param array     $data
+     */
     public function __construct(
-        \Magento\Framework\View\Element\Template\Context $context,
-        \Meanbee\ServiceWorker\Helper\Config $config,
-        \Magento\Framework\Json\Helper\Data $jsonHelper,
+        Context $context,
+        Config $config,
+        Data $jsonHelper,
         array $data
     ) {
         $this->config = $config;
@@ -63,21 +83,26 @@ class Js extends \Magento\Framework\View\Element\Template
     }
 
     /**
-     * Get the list of URLs for external scripts to import into the service worker.
+     * Get Url Service Worker Google Analytics.
      *
-     * @return string[]
+     * @return string|null
      */
-    public function getExternalScriptUrls()
+    public function getUrlServiceWorkerGA()
     {
-        $scripts = [
-            $this->getViewFileUrl("Meanbee_ServiceWorker::js/lib/workbox-sw.prod.v1.0.1.js"),
-        ];
-
         if ($this->isGaOfflineEnabled()) {
-            $scripts[] = $this->getViewFileUrl("Meanbee_ServiceWorker::js/lib/workbox-google-analytics.prod.v1.0.0.js");
+            return $this->getViewFileUrl("Meanbee_ServiceWorker::js/lib/workbox-google-analytics.prod.v1.0.0.js");
         }
+        return null;
+    }
 
-        return array_filter($scripts);
+    /**
+     * Get Url Service Worker Js.
+     *
+     * @return string
+     */
+    public function getUrlServiceWorkerJs()
+    {
+        return $this->getViewFileUrl("Meanbee_ServiceWorker::js/lib/workbox-sw.prod.v1.0.1.js");
     }
 
     /**
